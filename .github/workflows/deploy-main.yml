@@ -43,10 +43,10 @@ jobs:
         script: |
           cd ~/app
           # 전달받은 환경 변수들을 쉘에 export하여 docker-compose가 사용하도록 함
-          export MYSQL_ROOT_PASSWORD=${{ env.MYSQL_ROOT_PASSWORD }}
+          export MYSQL_ROOT_PASSWORD=${{ env.DB_PASSWORD }}
           export MYSQL_DATABASE=${{ env.MYSQL_DATABASE }}
-          export MYSQL_USER=${{ env.MYSQL_USER }}
-          export MYSQL_PASSWORD=${{ env.MYSQL_PASSWORD }}
+          export MYSQL_USER=${{ env.DB_USERNAME }}
+          export MYSQL_PASSWORD=${{ env.DB_PASSWORD }}
           export REDIS_HOST=${{ env.REDIS_HOST }}
           export REDIS_PORT=${{ env.REDIS_PORT }}
           export REDIS_PASSWORD=${{ env.REDIS_PASSWORD }}
@@ -61,10 +61,10 @@ jobs:
           # --build 옵션으로 app 서비스의 이미지를 새로 빌드하고, -d로 백그라운드 실행
           docker-compose up -d --build
       env: # 이 env 블록은 스텝 레벨에 있습니다.
-        MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
+        MYSQL_ROOT_PASSWORD: ${{ secrets.DB_PASSWORD }}
         MYSQL_DATABASE: ${{ secrets.MYSQL_DATABASE }}
-        MYSQL_USER: ${{ secrets.MYSQL_USER }}
-        MYSQL_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
+        MYSQL_USER: ${{ secrets.DB_USERNAME }}
+        MYSQL_PASSWORD: ${{ secrets.DB_PASSWORD }}
         REDIS_HOST: ${{ secrets.REDIS_HOST }}
         REDIS_PORT: ${{ secrets.REDIS_PORT }}
         REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
