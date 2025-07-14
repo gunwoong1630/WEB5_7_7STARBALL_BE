@@ -33,10 +33,9 @@ services:
         condition: service_healthy
     environment:
       - SPRING_PROFILES_ACTIVE=prod
-      # Spring Boot 애플리케이션에 DB 연결 정보 환경 변수로 전달
-      - DB_URL=${DB_URL}
-      - DB_USERNAME=${DB_USERNAME}
-      - DB_PASSWORD=${DB_PASSWORD}
+      - SPRING_DATASOURCE_URL=${SPRING_DATASOURCE_URL}
+      - SPRING_DATASOURCE_USERNAME=${SPRING_DATASOURCE_USERNAME}
+      - SPRING_DATASOURCE_PASSWORD=${SPRING_DATASOURCE_PASSWORD}
       - OPENAI_KEY=${OPENAI_KEY}
       - KAKAO_API_KEY=${KAKAO_API_KEY}
       - KAKAO_CLIENT_SECRET=${KAKAO_CLIENT_SECRET}

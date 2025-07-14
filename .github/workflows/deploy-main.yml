@@ -42,24 +42,6 @@ jobs:
         key: ${{ secrets.AWS_EC2_SSH_PRIVATE_KEY }}
         script: |
           cd ~/app
-          # 전달받은 환경 변수들을 쉘에 export하여 docker-compose가 사용하도록 함
-          export MYSQL_ROOT_PASSWORD=${{ env.MYSQL_ROOT_PASSWORD }}
-          export MYSQL_DATABASE=${{ env.MYSQL_DATABASE }}
-          export MYSQL_USER=${{ env.MYSQL_USER }}
-          export MYSQL_PASSWORD=${{ env.MYSQL_PASSWORD }}
-          export DB_URL=${{ env.DB_URL }}
-          export DB_USERNAME=${{ env.DB_USERNAME }}
-          export DB_PASSWORD=${{ env.DB_PASSWORD }}
-          export OPENAI_KEY=${{ env.OPENAI_KEY }}
-          export KAKAO_API_KEY=${{ env.KAKAO_API_KEY }}
-          export KAKAO_CLIENT_SECRET=${{ env.KAKAO_CLIENT_SECRET }}
-          export KAKAO_REDIRECT_URI=${{ env.KAKAO_REDIRECT_URI }}
-          export DATAPORTAL_KEY=${{ env.DATAPORTAL_KEY }}
-          export BADANURI_KEY=${{ env.BADANURI_KEY }}
-          export JWT_SECRET=${{ env.JWT_SECRET }}
-          export REDIS_HOST=${{ env.REDIS_HOST }}
-          export REDIS_PORT=${{ env.REDIS_PORT }}
-          export REDIS_PASSWORD=${{ env.REDIS_PASSWORD }}
           
           # 기존 서비스 중지 및 제거 (데이터베이스 볼륨 보존을 위해 --volumes는 사용하지 않음, 필요시 추가)
           echo "Stopping and removing existing Docker Compose services..."
@@ -73,9 +55,9 @@ jobs:
         MYSQL_DATABASE: ${{ secrets.MYSQL_DATABASE }}
         MYSQL_USER: ${{ secrets.DB_USERNAME }}
         MYSQL_PASSWORD: ${{ secrets.DB_PASSWORD }}
-        DB_URL: ${{ secrets.DB_URL }}
-        DB_USERNAME: ${{ secrets.DB_USERNAME }}
-        DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+        SPRING_DATASOURCE_URL: ${{ secrets.DB_URL }}
+        SPRING_DATASOURCE_USERNAME: ${{ secrets.DB_USERNAME }}
+        SPRING_DATASOURCE_PASSWORD: ${{ secrets.DB_PASSWORD }}
         OPENAI_KEY: ${{ secrets.OPENAI_KEY }}
         KAKAO_API_KEY: ${{ secrets.KAKAO_API_KEY }}
         KAKAO_CLIENT_SECRET: ${{ secrets.KAKAO_CLIENT_SECRET }}
