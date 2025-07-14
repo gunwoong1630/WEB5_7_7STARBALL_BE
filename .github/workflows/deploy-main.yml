@@ -31,7 +31,7 @@ jobs:
         host: ${{ secrets.AWS_EC2_HOST }}
         username: ${{ secrets.AWS_EC2_USER }}
         key: ${{ secrets.AWS_EC2_SSH_PRIVATE_KEY }}
-        source: "build/libs/*.jar,docker-compose.yml,Dockerfile" # .jar 파일, docker-compose.yml, Dockerfile 복사
+        source: "build/libs/*.jar,docker-compose.yml,Dockerfile,build.gradle,settings.gradle,gradlew,gradle/,src/" # .jar 파일, docker-compose.yml, Dockerfile, Gradle 관련 파일 및 소스 코드 복사
         target: "~/app"
         
     - name: Run Docker Compose on EC2
@@ -50,21 +50,21 @@ jobs:
           # --build 옵션으로 app 서비스의 이미지를 새로 빌드하고, -d로 백그라운드 실행
           echo "Starting new Docker Compose services..."
           docker-compose up -d --build
-      env: # 이 env 블록은 스텝 레벨에 있습니다.
-        MYSQL_ROOT_PASSWORD: ${{ secrets.DB_PASSWORD }}
-        MYSQL_DATABASE: ${{ secrets.MYSQL_DATABASE }}
-        MYSQL_USER: ${{ secrets.DB_USERNAME }}
-        MYSQL_PASSWORD: ${{ secrets.DB_PASSWORD }}
-        SPRING_DATASOURCE_URL: ${{ secrets.DB_URL }}
-        SPRING_DATASOURCE_USERNAME: ${{ secrets.DB_USERNAME }}
-        SPRING_DATASOURCE_PASSWORD: ${{ secrets.DB_PASSWORD }}
-        OPENAI_KEY: ${{ secrets.OPENAI_KEY }}
-        KAKAO_API_KEY: ${{ secrets.KAKAO_API_KEY }}
-        KAKAO_CLIENT_SECRET: ${{ secrets.KAKAO_CLIENT_SECRET }}
-        KAKAO_REDIRECT_URI: ${{ secrets.KAKAO_REDIRECT_URI }}
-        DATAPORTAL_KEY: ${{ secrets.DATAPORTAL_KEY }}
-        BADANURI_KEY: ${{ secrets.BADANURI_KEY }}
-        JWT_SECRET: ${{ secrets.JWT_SECRET }}
-        REDIS_HOST: ${{ secrets.REDIS_HOST }}
-        REDIS_PORT: ${{ secrets.REDIS_PORT }}
-        REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
+        env:
+          MYSQL_ROOT_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          MYSQL_DATABASE: ${{ secrets.MYSQL_DATABASE }}
+          MYSQL_USER: ${{ secrets.DB_USERNAME }}
+          MYSQL_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          SPRING_DATASOURCE_URL: ${{ secrets.DB_URL }}
+          SPRING_DATASOURCE_USERNAME: ${{ secrets.DB_USERNAME }}
+          SPRING_DATASOURCE_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          OPENAI_KEY: ${{ secrets.OPENAI_KEY }}
+          KAKAO_API_KEY: ${{ secrets.KAKAO_API_KEY }}
+          KAKAO_CLIENT_SECRET: ${{ secrets.KAKAO_CLIENT_SECRET }}
+          KAKAO_REDIRECT_URI: ${{ secrets.KAKAO_REDIRECT_URI }}
+          DATAPORTAL_KEY: ${{ secrets.DATAPORTAL_KEY }}
+          BADANURI_KEY: ${{ secrets.BADANURI_KEY }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          REDIS_HOST: ${{ secrets.REDIS_HOST }}
+          REDIS_PORT: ${{ secrets.REDIS_PORT }}
+          REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
