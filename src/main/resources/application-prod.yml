@@ -1,32 +1,22 @@
 spring:
-  application:
-    name: MarineLeisure
-
-  config:
-    activate:
-      on-profile: prod
-  sql:
-    init:
-      mode: always
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
   data:
     redis:
       host: ${REDIS_HOST}
       port: ${REDIS_PORT}
       password: ${REDIS_PASSWORD}
-  redis:
-    ssl: false
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/marine
-    username: ${DB_USERNAME}
-    password: ${DB_PASSWORD}
-
   jpa:
     properties:
       hibernate:
+        jdbc:
+          batch_size: 100
         format_sql: true
         show_sql: true
-        dialect: org.hibernate.dialect.MySQL8Dialect
+
     hibernate:
       ddl-auto: update
     defer-datasource-initialization: true
@@ -36,6 +26,20 @@ spring:
       api-key: ${OPENAI_KEY}
       chat:
         model: gpt-3.5-turbo
+
+kakao:
+  login:
+    api_key: ${KAKAO_API_KEY}
+    client_secret: ${KAKAO_CLIENT_SECRET}
+    redirect_uri: ${KAKAO_REDIRECT_URI}
+    uri:
+      code: /oauth/authorize
+      base: https://kauth.kakao.com
+
+app:
+  client:
+    url: "http://localhost:5174"
+
 api:
   # 국립해양조사원(Korea Hydrographic and Oceanographic Agency, KHOA)
   khoa:
@@ -47,16 +51,16 @@ api:
       mudflat: /fcstMudflat/GetFcstMudflatApiService
       diving: /fcstSkinScuba/GetFcstSkinScubaApiService
       surfing: /fcstSurfing/GetFcstSurfingApiService
+
+  badanuri:
+    key: ${BADANURI_KEY}
+
   openmeteo:
     base-url: https://api.open-meteo.com/v1/forecast
-badanuri:
-  api:
-    key: ${BADANURI_KEY}
-kakao:
-  login:
-    api_key: ${KAKAO_API_KEY}
-    client_secret: ${KAKAO_CLIENT_SECRET}
-    redirect_uri: http://localhost:8080/oauth/kakao/callback
-    uri:
-      code: /oauth/authorize
-      base: https://kauth.kakao.com
+    timezone: Asia/Seoul
+
+jwt:
+  secret: ${JWT_SECRET}
+  access-token-validity-in-seconds: 300
+server:
+  port: 8082
