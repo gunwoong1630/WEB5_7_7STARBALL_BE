@@ -7,14 +7,19 @@ services:
     container_name: mysql_db
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD} # GitHub Secret에서 주입
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD} # GitHub Secret에서 주입
       MYSQL_DATABASE: ${MYSQL_DATABASE} # GitHub Secret에서 주입
-      MYSQL_USER: ${DB_USERNAME} # GitHub Secret에서 주입
-      MYSQL_PASSWORD: ${DB_PASSWORD} # GitHub Secret에서 주입
+      MYSQL_USER: ${MYSQL_USER} # GitHub Secret에서 주입
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD} # GitHub Secret에서 주입
     volumes:
-      - ./mysql-data:/var/lib/mysql # 데이터 영속성을 위해 호스트와 볼륨 매핑
+      - mysql-data:/var/lib/mysql # 데이터 영속성을 위해 호스트와 볼륨 매핑
     ports:
-      - "3306:3306" # 외부 접근을 위해 포트 개방 (보안상 주의)
+      - "3307:3306" # 외부 접근을 위해 포트 개방 (보안상 주의)
+#    healthcheck:
+#      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u$MYSQL_USER", "-p$MYSQL_PASSWORD"]
+#      timeout: 20s
+#      retries: 10
+#      start_period: 30s
     command:
       - --character-set-server=utf8mb4
       - --collation-server=utf8mb4_unicode_ci
@@ -28,8 +33,20 @@ services:
     environment:
       - SPRING_PROFILES_ACTIVE=prod
       # Spring Boot 애플리케이션에 DB 연결 정보 환경 변수로 전달
-      - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/${MYSQL_DATABASE}?useSSL=false&allowPublicKeyRetrieval=true
-      - SPRING_DATASOURCE_USERNAME=${DB_USERNAME}
-      - SPRING_DATASOURCE_PASSWORD=${DB_PASSWORD}
+      - DB_URL=${DB_URL}
+      - DB_USERNAME=${DB_USERNAME}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - OPENAI_KEY=${OPENAI_KEY}
+      - KAKAO_API_KEY=${KAKAO_API_KEY}
+      - KAKAO_CLIENT_SECRET=${KAKAO_CLIENT_SECRET}
+      - KAKAO_REDIRECT_URI=${KAKAO_REDIRECT_URI}
+      - DATAPORTAL_KEY=${DATAPORTAL_KEY}
+      - BADANURI_KEY=${BADANURI_KEY}
+      - JWT_SECRET=${JWT_SECRET}
+      - REDIS_HOST=${REDIS_HOST}
+      - REDIS_PORT=${REDIS_PORT}
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
     ports:
       - "80:8080" # 호스트의 80번 포트를 컨테이너의 8080 포트로 매핑
+volumes:
+  mysql-data:
