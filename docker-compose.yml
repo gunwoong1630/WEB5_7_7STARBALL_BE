@@ -7,7 +7,7 @@ services:
     container_name: mysql_db
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD} # GitHub Secret에서 주입
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD} # GitHub Secret에서 주입
       MYSQL_DATABASE: ${MYSQL_DATABASE} # GitHub Secret에서 주입
       MYSQL_USER: ${DB_USERNAME} # GitHub Secret에서 주입
       MYSQL_PASSWORD: ${DB_PASSWORD} # GitHub Secret에서 주입
