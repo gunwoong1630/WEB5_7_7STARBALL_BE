@@ -26,7 +26,7 @@ jobs:
         run: chmod +x ./gradlew
 
       - name: do test
-        run: ./gradlew test --stacktrace --no-daemon -Dspring.profiles.active=test --info
+        run: ./gradlew test --stacktrace --no-daemon --info
         env:
           JAVA_TOOL_OPTIONS: "-Dlogging.level.root=DEBUG"
 
