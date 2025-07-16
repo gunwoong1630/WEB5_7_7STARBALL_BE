@@ -9,6 +9,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.NamedQuery;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -20,6 +21,10 @@ import sevenstar.marineleisure.meeting.service.util.StringListConverter;
 
 @Entity
 @Getter
+@NamedQuery(
+    name = "Tag.findByMeetingId",
+    query = "SELECT t FROM Tag t WHERE t.meetingId = :meetingId"
+)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "tags")
 @Builder
