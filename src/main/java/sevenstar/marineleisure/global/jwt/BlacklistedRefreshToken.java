@@ -9,10 +9,6 @@ import sevenstar.marineleisure.global.domain.BaseEntity;
 import java.time.LocalDateTime;
 
 @Entity
-@NamedQuery(
-    name = "BlacklistedRefreshToken.existsByJti",
-    query = "SELECT COUNT(b) > 0 FROM BlacklistedRefreshToken b WHERE b.jti = :jti"
-)
 @Table(name = "blacklisted_refresh_tokens", 
        indexes = {
            @Index(name = "idx_blacklisted_refresh_tokens_jti", columnList = "jti")

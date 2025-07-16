@@ -18,10 +18,6 @@ import sevenstar.marineleisure.global.enums.MemberStatus;
 
 @Entity
 @Getter
-@NamedQuery(
-    name = "Member.findByProviderAndProviderId",
-    query = "SELECT m FROM Member m WHERE m.provider = :provider AND m.providerId = :providerId"
-)
 @Table(name = "members")
 @NoArgsConstructor
 public class Member extends BaseEntity {

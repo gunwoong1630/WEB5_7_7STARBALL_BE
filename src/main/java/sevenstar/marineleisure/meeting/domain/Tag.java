@@ -21,10 +21,6 @@ import sevenstar.marineleisure.meeting.service.util.StringListConverter;
 
 @Entity
 @Getter
-@NamedQuery(
-    name = "Tag.findByMeetingId",
-    query = "SELECT t FROM Tag t WHERE t.meetingId = :meetingId"
-)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "tags")
 @Builder
