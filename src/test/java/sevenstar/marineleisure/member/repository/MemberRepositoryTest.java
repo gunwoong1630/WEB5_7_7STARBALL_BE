@@ -10,12 +10,15 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.context.annotation.Import;
 
+import sevenstar.marineleisure.global.config.JpaAuditingConfig;
 import sevenstar.marineleisure.global.enums.MemberStatus;
 import sevenstar.marineleisure.global.test.BaseMySqlTestcontainersTest;
 import sevenstar.marineleisure.member.domain.Member;
 
 @DataJpaTest
+@Import(JpaAuditingConfig.class)
 class MemberRepositoryTest extends BaseMySqlTestcontainersTest {
 
 	@Autowired
