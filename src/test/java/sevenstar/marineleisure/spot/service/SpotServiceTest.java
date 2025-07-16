@@ -11,7 +11,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 
-import sevenstar.marineleisure.annotation.MysqlDataJpaTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+
 import sevenstar.marineleisure.forecast.domain.Fishing;
 import sevenstar.marineleisure.forecast.domain.FishingTarget;
 import sevenstar.marineleisure.forecast.domain.Mudflat;
@@ -22,10 +23,12 @@ import sevenstar.marineleisure.forecast.repository.FishingTargetRepository;
 import sevenstar.marineleisure.forecast.repository.MudflatRepository;
 import sevenstar.marineleisure.forecast.repository.ScubaRepository;
 import sevenstar.marineleisure.forecast.repository.SurfingRepository;
+import sevenstar.marineleisure.global.config.JpaAuditingConfig;
 import sevenstar.marineleisure.global.enums.ActivityCategory;
 import sevenstar.marineleisure.global.enums.TidePhase;
 import sevenstar.marineleisure.global.enums.TimePeriod;
 import sevenstar.marineleisure.global.enums.TotalIndex;
+import sevenstar.marineleisure.global.test.BaseMySqlTestcontainersTest;
 import sevenstar.marineleisure.global.utils.GeoUtils;
 import sevenstar.marineleisure.spot.config.GeoConfig;
 import sevenstar.marineleisure.spot.domain.OutdoorSpot;
@@ -37,11 +40,11 @@ import sevenstar.marineleisure.spot.dto.detail.provider.ScubaDetailProvider;
 import sevenstar.marineleisure.spot.dto.detail.provider.SurfingDetailProvider;
 import sevenstar.marineleisure.spot.repository.OutdoorSpotRepository;
 
-@MysqlDataJpaTest
+@DataJpaTest
 @Import({SpotServiceImpl.class, GeoUtils.class, GeoConfig.class, ActivityDetailProviderFactory.class,
 	FishingDetailProvider.class, MudflatDetailProvider.class, ScubaDetailProvider.class,
-	SurfingDetailProvider.class})
-class SpotServiceTest {
+	SurfingDetailProvider.class, JpaAuditingConfig.class})
+class SpotServiceTest extends BaseMySqlTestcontainersTest {
 	@Autowired
 	private SpotService spotService;
 	@Autowired
