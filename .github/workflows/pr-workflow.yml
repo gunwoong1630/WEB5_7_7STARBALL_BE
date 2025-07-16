@@ -2,7 +2,7 @@ name: MarineLeisure Pull Request Script -Test & Image build
 on:
   pull_request:
     branches:
-      - dev2
+      - prod
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
