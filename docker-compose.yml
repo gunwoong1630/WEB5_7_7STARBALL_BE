@@ -25,7 +25,7 @@ services:
       start_period: 40s
 
   app:
-    image: ghcr.io/your-org/your-repo:latest  # 최신 이미지 태그
+    image: ${DOCKER_IMAGE_NAME}
     networks:
       - marine-net
     container_name: marine_app

@@ -55,7 +55,19 @@ jobs:
           username: ${{ secrets.AWS_EC2_USERNAME }}
           key: ${{ secrets.AWS_EC2_SSH_KEY }}
           script: |
-            cd /home/gunwoong_mac/IdeaProjects/t2
+            IMAGE_NAME_LOWERCASE=$(echo ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }} | tr '[:upper:]' '[:lower:]')
+            DEPLOY_DIR=~/app
+
+            if [ -d "$DEPLOY_DIR" ]; then
+              cd $DEPLOY_DIR
+              git pull
+            else
+              git clone https://github.com/${{ github.repository }}.git $DEPLOY_DIR
+              cd $DEPLOY_DIR
+            fi
+
             echo "${{ secrets.ENV_FILE_CONTENT }}" > .env
-            docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:main
-            docker-compose up -d
+            export DOCKER_IMAGE_NAME=$IMAGE_NAME_LOWERCASE:main
+            
+            docker pull $DOCKER_IMAGE_NAME
+            docker-compose up -d --remove-orphans
