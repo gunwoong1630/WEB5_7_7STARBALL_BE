@@ -18,7 +18,8 @@ public interface FishingRepository extends ActivityRepository<Fishing, Long> {
 	@Query(value = """
 					SELECT DISTINCT f.spotId FROM Fishing f
 					WHERE f.forecastDate BETWEEN :forecastDateAfter AND :forecastDateBefore
-		""")
+		""",
+	countQuery = "SELECT COUNT(DISTINCT f.spotId) FROM Fishing f WHERE f.forecastDate BETWEEN :forecastDateAfter AND :forecastDateBefore")
 	List<Long> findByForecastDateBetween(@Param("forecastDateAfter") LocalDate forecastDateAfter,
 		@Param("forecastDateBefore") LocalDate forecastDateBefore);
 
