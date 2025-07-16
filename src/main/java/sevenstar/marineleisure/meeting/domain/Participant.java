@@ -5,6 +5,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.NamedQueries;
+import jakarta.persistence.NamedQuery;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -15,6 +17,24 @@ import sevenstar.marineleisure.global.enums.MeetingRole;
 
 @Entity
 @Getter
+@NamedQueries({
+    @NamedQuery(
+        name = "Participant.findByUserId",
+        query = "SELECT p FROM Participant p WHERE p.userId = :userId"
+    ),
+    @NamedQuery(
+        name = "Participant.findByMeetingIdAndUserId",
+        query = "SELECT p FROM Participant p WHERE p.meetingId = :meetingId AND p.userId = :userId"
+    ),
+    @NamedQuery(
+        name = "Participant.existsByUserId",
+        query = "SELECT COUNT(p) > 0 FROM Participant p WHERE p.userId = :userId"
+    ),
+    @NamedQuery(
+        name = "Participant.existsByMeetingIdAndUserId",
+        query = "SELECT COUNT(p) > 0 FROM Participant p WHERE p.meetingId = :meetingId AND p.userId = :userId"
+    )
+})
 @Table(name = "meeting_participants")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Participant extends BaseEntity {
