@@ -24,6 +24,7 @@ configurations {
 }
 
 repositories {
+    maven { url "https://repo.osgeo.org/repository/release/"}
     mavenCentral()
 }
 
@@ -66,7 +67,6 @@ dependencies {
 
     // geo dependencies
     implementation 'org.hibernate:hibernate-spatial:6.5.2.Final'
-    implementation 'org.locationtech.jts:jts-core:1.19.0'
 
     // mock-inline
     testImplementation 'org.mockito:mockito-inline:5.2.0'
@@ -86,6 +86,17 @@ dependencies {
 
     // mail
     implementation 'org.springframework.boot:spring-boot-starter-mail'
+
+//    implementation("com.bucket4j:bucket4j-core:8.10.1")
+    implementation("com.bucket4j:bucket4j_jdk17-lettuce:8.14.0")
+    implementation("com.bucket4j:bucket4j_jdk17-redis-common:8.14.0")
+
+    implementation 'org.geotools:gt-shapefile:30.1'
+    implementation 'org.geotools:gt-main:30.1'
+    implementation 'org.geotools:gt-referencing:30.1'
+    implementation 'org.geotools:gt-epsg-hsql:30.1'
+    implementation 'org.locationtech.jts:jts-core:1.19.0'
+
 
 }
 
