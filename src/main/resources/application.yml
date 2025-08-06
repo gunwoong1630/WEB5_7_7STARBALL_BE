@@ -2,7 +2,7 @@ spring:
   application:
     name: MarineLeisure
   profiles:
-    active: prod
+    active: dev
 
 resilience4j.circuitbreaker:
   instances:
