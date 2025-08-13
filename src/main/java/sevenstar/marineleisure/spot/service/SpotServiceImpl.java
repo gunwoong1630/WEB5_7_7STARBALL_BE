@@ -131,6 +131,23 @@ public class SpotServiceImpl implements SpotService {
 		return getSpotPresetPreview(region);
 	}
 
+	@Override
+	public SpotPreviewReadResponse legacyPreview(float latitude, float longitude) {
+		LocalDate now = LocalDate.now();
+		BestSpot emptySpot = new BestSpot(-1L, "없는 지역입니다", null,0,0);
+		double radius = 500_000;
+		BestSpot bestSpotInFishing = outdoorSpotRepository.findBestSpotInFishing(latitude,
+			longitude, now, radius).map(BestSpot::new).orElse(emptySpot);
+		BestSpot bestSpotInMudflat = outdoorSpotRepository.findBestSpotInMudflat(latitude,
+			longitude, now, radius).map(BestSpot::new).orElse(emptySpot);
+		BestSpot bestSpotInScuba = outdoorSpotRepository.findBestSpotInScuba(latitude,
+			longitude, now, radius).map(BestSpot::new).orElse(emptySpot);
+		BestSpot bestSpotInSurfing = outdoorSpotRepository.findBestSpotInSurfing(latitude,
+			longitude, now, radius).map(BestSpot::new).orElse(emptySpot);
+		return new SpotPreviewReadResponse(bestSpotInFishing, bestSpotInMudflat, bestSpotInSurfing,
+			bestSpotInScuba);
+	}
+
 	@Cacheable(value = "spotPresetPreviews", key = "#region.name()")
 	public SpotPreviewReadResponse getSpotPresetPreview(Region region) {
 		SpotPreset spotPreset = spotPresetRepository.findById(region)

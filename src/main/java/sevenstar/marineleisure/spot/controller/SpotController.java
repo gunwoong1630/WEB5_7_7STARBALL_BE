@@ -41,4 +41,10 @@ public class SpotController {
 		@ModelAttribute @Valid SpotPreviewRequest request) {
 		return BaseResponse.success(spotService.preview(request.getLatitude(), request.getLongitude()));
 	}
+
+	@GetMapping("/legacyPreview")
+	ResponseEntity<BaseResponse<SpotPreviewReadResponse>> getSpotLegacyPreview(
+		@ModelAttribute @Valid SpotPreviewRequest request) {
+		return BaseResponse.success(spotService.legacyPreview(request.getLatitude(), request.getLongitude()));
+	}
 }
