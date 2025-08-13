@@ -20,13 +20,16 @@ import sevenstar.marineleisure.global.enums.TotalIndex;
 import sevenstar.marineleisure.global.utils.DateUtils;
 import sevenstar.marineleisure.spot.domain.OutdoorSpot;
 import sevenstar.marineleisure.spot.dto.EmailContent;
+import sevenstar.marineleisure.spot.dto.upsert.SurfingUpsertDto;
 import sevenstar.marineleisure.spot.mapper.SpotDetailMapper;
+import sevenstar.marineleisure.spot.repository.ActivityJdbcBatchUpsertRepository;
 import sevenstar.marineleisure.spot.repository.ActivityRepository;
 
 @Component
 @RequiredArgsConstructor
 public class SurfingProvider extends ActivityProvider {
 	private final SurfingRepository surfingRepository;
+	private final ActivityJdbcBatchUpsertRepository activityJdbcBatchUpsertRepository;
 
 	@Override
 	public ActivityCategory getSupportCategory() {
@@ -49,14 +52,17 @@ public class SurfingProvider extends ActivityProvider {
 		initApiData(new ParameterizedTypeReference<ApiResponse<SurfingItem>>() {
 		}, items, startDate, endDate, FishingType.NONE);
 
+		List<SurfingUpsertDto> batchData = new ArrayList<>();
+
 		for (SurfingItem item : items) {
 			OutdoorSpot outdoorSpot = createOutdoorSpot(item, FishingType.NONE);
-
-			surfingRepository.upsertSurfing(outdoorSpot.getId(), DateUtils.parseDate(item.getPredcYmd()),
+			batchData.add(new SurfingUpsertDto(outdoorSpot.getId(), DateUtils.parseDate(item.getPredcYmd()),
 				TimePeriod.from(item.getPredcNoonSeCd()).name(), Float.parseFloat(item.getAvgWvhgt()),
 				Float.parseFloat(item.getAvgWvpd()), Float.parseFloat(item.getAvgWspd()),
-				Float.parseFloat(item.getAvgWtem()), TotalIndex.fromDescription(item.getTotalIndex()).name());
+				Float.parseFloat(item.getAvgWtem()), TotalIndex.fromDescription(item.getTotalIndex()).name()));
 		}
+
+		activityJdbcBatchUpsertRepository.batchUpsertSurfing(batchData);
 	}
 
 	@Override

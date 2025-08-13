@@ -22,13 +22,16 @@ import sevenstar.marineleisure.global.enums.TotalIndex;
 import sevenstar.marineleisure.global.utils.DateUtils;
 import sevenstar.marineleisure.spot.domain.OutdoorSpot;
 import sevenstar.marineleisure.spot.dto.EmailContent;
+import sevenstar.marineleisure.spot.dto.upsert.ScubaUpsertDto;
 import sevenstar.marineleisure.spot.mapper.SpotDetailMapper;
+import sevenstar.marineleisure.spot.repository.ActivityJdbcBatchUpsertRepository;
 import sevenstar.marineleisure.spot.repository.ActivityRepository;
 
 @Component
 @RequiredArgsConstructor
 public class ScubaProvider extends ActivityProvider {
 	private final ScubaRepository scubaRepository;
+	private final ActivityJdbcBatchUpsertRepository activityJdbcBatchUpsertRepository;
 
 	@Override
 	public ActivityCategory getSupportCategory() {
@@ -51,15 +54,19 @@ public class ScubaProvider extends ActivityProvider {
 		initApiData(new ParameterizedTypeReference<ApiResponse<ScubaItem>>() {
 		}, items, startDate, endDate, FishingType.NONE);
 
+		List<ScubaUpsertDto> batchData = new ArrayList<>();
+
 		for (ScubaItem item : items) {
 			OutdoorSpot outdoorSpot = createOutdoorSpot(item, FishingType.NONE);
-			scubaRepository.upsertScuba(outdoorSpot.getId(), DateUtils.parseDate(item.getPredcYmd()),
+			batchData.add(new ScubaUpsertDto(outdoorSpot.getId(), DateUtils.parseDate(item.getPredcYmd()),
 				TimePeriod.from(item.getPredcNoonSeCd()).name(), TidePhase.parse(item.getTdlvHrCn()).name(),
 				TotalIndex.fromDescription(item.getTotalIndex()).name(), Float.parseFloat(item.getMinWvhgt()),
 				Float.parseFloat(item.getMaxWvhgt()), Float.parseFloat(item.getMinWtem()),
 				Float.parseFloat(item.getMaxWtem()), Float.parseFloat(item.getMinCrsp()),
-				Float.parseFloat(item.getMaxCrsp()));
+				Float.parseFloat(item.getMaxCrsp())));
 		}
+
+		activityJdbcBatchUpsertRepository.batchUpsertScuba(batchData);
 	}
 
 	@Override

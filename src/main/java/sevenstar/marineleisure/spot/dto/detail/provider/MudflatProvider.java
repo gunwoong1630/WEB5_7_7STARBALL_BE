@@ -1,11 +1,14 @@
 package sevenstar.marineleisure.spot.dto.detail.provider;
 
+import java.sql.Date;
+import java.sql.Types;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
@@ -20,13 +23,16 @@ import sevenstar.marineleisure.global.enums.TotalIndex;
 import sevenstar.marineleisure.global.utils.DateUtils;
 import sevenstar.marineleisure.spot.domain.OutdoorSpot;
 import sevenstar.marineleisure.spot.dto.EmailContent;
+import sevenstar.marineleisure.spot.dto.upsert.MudflatUpsertDto;
 import sevenstar.marineleisure.spot.mapper.SpotDetailMapper;
+import sevenstar.marineleisure.spot.repository.ActivityJdbcBatchUpsertRepository;
 import sevenstar.marineleisure.spot.repository.ActivityRepository;
 
 @Component
 @RequiredArgsConstructor
 public class MudflatProvider extends ActivityProvider {
 	private final MudflatRepository mudflatRepository;
+	private final ActivityJdbcBatchUpsertRepository activityJdbcBatchUpsertRepository;
 
 	@Override
 	public ActivityCategory getSupportCategory() {
@@ -49,15 +55,19 @@ public class MudflatProvider extends ActivityProvider {
 		initApiData(new ParameterizedTypeReference<ApiResponse<MudflatItem>>() {
 		}, items, startDate, endDate, FishingType.NONE);
 
+		List<MudflatUpsertDto> batchData = new ArrayList<>();
+
 		for (MudflatItem item : items) {
 			OutdoorSpot outdoorSpot = createOutdoorSpot(item, FishingType.NONE);
 
-			mudflatRepository.upsertMudflat(outdoorSpot.getId(), DateUtils.parseDate(item.getPredcYmd()),
+			batchData.add(new MudflatUpsertDto(outdoorSpot.getId(), DateUtils.parseDate(item.getPredcYmd()),
 				LocalTime.parse(item.getMdftExprnBgngTm()), LocalTime.parse(item.getMdftExprnEndTm()),
 				Float.parseFloat(item.getMinArtmp()), Float.parseFloat(item.getMaxArtmp()),
 				Float.parseFloat(item.getMinWspd()), Float.parseFloat(item.getMaxWspd()), item.getWeather(),
-				TotalIndex.fromDescription(item.getTotalIndex()).name());
+				TotalIndex.fromDescription(item.getTotalIndex()).name()));
 		}
+
+		activityJdbcBatchUpsertRepository.batchUpsertMudflat(batchData);
 	}
 
 	@Override

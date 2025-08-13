@@ -20,7 +20,7 @@ public class MeetingStatusScheduler {
     
     private final MeetingRepository meetingRepository;
     
-    @Scheduled(cron = "0 */10 * * * *") // 10분마다 실행
+    // @Scheduled(cron = "0 */10 * * * *") // 10분마다 실행
     @Transactional
     public void updateExpiredMeetingsToCompleted() {
         LocalDateTime now = LocalDateTime.now();

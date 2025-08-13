@@ -1,5 +1,7 @@
 package sevenstar.marineleisure.spot.dto.detail.provider;
 
+import java.sql.Date;
+import java.sql.Types;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.EnumMap;
@@ -7,9 +9,11 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
+import sevenstar.marineleisure.forecast.domain.Fishing;
 import sevenstar.marineleisure.forecast.repository.FishingRepository;
 import sevenstar.marineleisure.forecast.repository.FishingTargetRepository;
 import sevenstar.marineleisure.global.api.khoa.dto.common.ApiResponse;
@@ -25,7 +29,9 @@ import sevenstar.marineleisure.global.utils.DateUtils;
 import sevenstar.marineleisure.spot.domain.OutdoorSpot;
 import sevenstar.marineleisure.spot.dto.EmailContent;
 import sevenstar.marineleisure.spot.dto.projection.FishingReadProjection;
+import sevenstar.marineleisure.spot.dto.upsert.FishingUpsertDto;
 import sevenstar.marineleisure.spot.mapper.SpotDetailMapper;
+import sevenstar.marineleisure.spot.repository.ActivityJdbcBatchUpsertRepository;
 import sevenstar.marineleisure.spot.repository.ActivityRepository;
 
 @Component
@@ -33,6 +39,7 @@ import sevenstar.marineleisure.spot.repository.ActivityRepository;
 public class FishingProvider extends ActivityProvider {
 	private final FishingRepository fishingRepository;
 	private final FishingTargetRepository fishingTargetRepository;
+	private final ActivityJdbcBatchUpsertRepository activityJdbcBatchUpsertRepository;
 
 	@Override
 	public ActivityCategory getSupportCategory() {
@@ -62,6 +69,8 @@ public class FishingProvider extends ActivityProvider {
 			}
 		}
 
+		List<FishingUpsertDto> batchData = new ArrayList<>();
+
 		for (Map.Entry<FishingType, List<FishingItem>> entry : data.entrySet()) {
 			FishingType fishingType = entry.getKey();
 			List<FishingItem> items = entry.getValue();
@@ -71,14 +80,16 @@ public class FishingProvider extends ActivityProvider {
 					fishingTargetRepository.findByName(item.getSeafsTgfshNm())
 						.orElseGet(() -> fishingTargetRepository.save(KhoaMapper.toEntity(item.getSeafsTgfshNm())))
 						.getId();
-				fishingRepository.upsertFishing(outdoorSpot.getId(), targetId, DateUtils.parseDate(item.getPredcYmd()),
-					TimePeriod.from(item.getPredcNoonSeCd()).name(), TidePhase.parse(item.getTdlvHrScr()).name(),
-					TotalIndex.fromDescription(item.getTotalIndex()).name(), item.getMinWvhgt(), item.getMaxWvhgt(),
-					item.getMinWtem(), item.getMaxWtem(), item.getMinArtmp(), item.getMinArtmp(), item.getMinCrsp(),
-					item.getMaxCrsp(), item.getMinWspd(), item.getMaxWspd());
+				batchData.add(
+					new FishingUpsertDto(outdoorSpot.getId(), targetId, DateUtils.parseDate(item.getPredcYmd()),
+						TimePeriod.from(item.getPredcNoonSeCd()).name(), TidePhase.parse(item.getTdlvHrScr()).name(),
+						TotalIndex.fromDescription(item.getTotalIndex()).name(), item.getMinWvhgt(), item.getMaxWvhgt(),
+						item.getMinWtem(), item.getMaxWtem(), item.getMinArtmp(), item.getMinArtmp(), item.getMinCrsp(),
+						item.getMaxCrsp(), item.getMinWspd(), item.getMaxWspd()));
 			}
-
 		}
+
+		activityJdbcBatchUpsertRepository.batchUpsertFishing(batchData);
 	}
 
 	@Override

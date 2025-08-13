@@ -39,7 +39,7 @@ public class Fishing extends BaseEntity {
 	@Column(name = "forecast_date", nullable = false)
 	private LocalDate forecastDate;
 
-	@Column(name = "time_period", length = 10)
+	@Column(name = "time_period", length = 10, nullable = false)
 	@Enumerated(EnumType.STRING)
 	private TimePeriod timePeriod;
 
